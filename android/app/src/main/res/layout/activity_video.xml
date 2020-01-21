@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VideoActivity">
+
+    <WebView
+        android:id="@+id/streamWebView"
+        android:layout_width="640px"
+        android:layout_height="480px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        custom:JV_backgroundColor="#808080"
+        custom:JV_borderColor="#000000"
+        custom:JV_borderWidth="3dp"
+        custom:JV_buttonDirection="horizontal"
+        android:id="@+id/joystick"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

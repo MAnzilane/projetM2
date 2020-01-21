@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">car</string>
+    <string name="title_activity_scenario">ScenarioActivity</string>
+</resources>

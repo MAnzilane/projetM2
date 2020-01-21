@@ -1,0 +1,13 @@
+[Unit]
+Description=Car server service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python3 /home/pi/projet/server.py "master"
+Restart=on-failure
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
