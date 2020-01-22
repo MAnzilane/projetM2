@@ -4,10 +4,10 @@
 # Author: Couzon Florent
 #
 
-
 # ======================================================================
 # Imports
 # ======================================================================
+
 import logging as log; log.basicConfig(level=log.DEBUG)
 import sys
 import time
@@ -17,6 +17,7 @@ from lib.hardware.wheel_motors import Wheel_Motors
 import lib.hardware.enum_types as enum
 from lib.position import Position
 from lib.config import Config
+
 # ======================================================================
 # Constants
 # ======================================================================
@@ -59,13 +60,16 @@ class Pilot(object):
 	# ==================================================================
 	# Private methods
 	# ==================================================================
-	#TODO delete if not needed here for straight movement test
+
+	# TODO delete if not needed here for straight movement test
 	def set_value(self, value = 427):
 		self.direction_state = enum.Direction_State.MANUALLY_SET
 		self.direction.set_value(value)
+
 	# ==================================================================
 	# Methods
 	# ==================================================================
+
 	def forward_speed(self, speed=None):
 		self.mvt_state = enum.Mvt_State.FORWARD
 		self.wheel_motors.forward_speed(speed)
@@ -139,62 +143,6 @@ class Pilot(object):
 		self.wheel_motors.rotate_speed_left(speed)
 
 
-
-# ======================================================================
-# Main
-# ======================================================================
-def test_pilot():
-	pilot = Pilot()
-
-	log.debug("Test Pilot:")
-
-	log.debug("Move forward at speed 70 for 2 sec.")
-	pilot.forward_speed(70)
-	time.sleep(2)
-
-	log.debug("Turn left for 2 sec.")
-	pilot.turn_left()
-	time.sleep(2)
-
-	log.debug("Go straight for 2 sec.")
-	pilot.go_straight()
-	time.sleep(2)
-
-	log.debug("Turn right for 2 sec.")
-	pilot.turn_right()
-	time.sleep(2)
-
-	log.debug("Change speed to 100 for 2 sec.")
-	pilot.set_speed(100)
-	time.sleep(2)
-
-	log.debug("Stop the car 1 sec.")
-	pilot.stop()
-	time.sleep(1)
-
-	log.debug("Go backward at speed 70 for 2 sec.")
-	pilot.backward_speed(70)
-	time.sleep(2)
-
-	log.debug("Turn left for 2 sec.")
-	pilot.turn_left()
-	time.sleep(2)
-
-	log.debug("Rotate left for 2 sec.")
-	pilot.rotate_speed_left(100)
-	time.sleep(2)
-
-	log.debug("Rotate right for 2 sec.")
-	pilot.rotate_speed_right(100)
-	time.sleep(2)
-
-	pilot.stop()
-
-
-def main():
-	test_pilot()
-
 # Execution or import
-if(__name__ == "__main__"):
-	main()
+if __name__ == "__main__":
 	sys.exit(0)

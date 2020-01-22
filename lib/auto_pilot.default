@@ -1,1 +1,0 @@
-{"speed_scenario_move_and_avoid": "80", "impact_distance": "25", "check_obj_interval": "0.2", "time_check_blocked": "2", "avoiding_time": "1.2", "routine_unblock_timing_1": "1", "routine_unblock_timing_2": "1", "gps_period": "5"}

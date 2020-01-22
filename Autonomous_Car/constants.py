@@ -1,6 +1,8 @@
 # Environment parameters
 GRID_ROWS = 10
 GRID_COLUMNS = 10
+TARGET_X = 10
+TARGET_Y = 10
 ACTIONS_NUMBER = 4
 STATE_SHAPE = 3
 DISTANCE_MAX = 30
@@ -10,6 +12,10 @@ UP = 0
 DOWN = 1
 LEFT = 2
 RIGHT = 3
+NORTH = 0
+SOUTH = 1
+WEST = 2
+EAST = 3
 
 # Simulation parameters
 BLACK = (55, 71, 79)
@@ -17,6 +23,7 @@ WHITE = (255, 255, 255)
 GREEN = (15, 157, 88)
 RED = (219, 68, 55)
 BLUE = (66, 133, 244)
+YELLOW = (244, 160, 0)
 CELL_WIDTH = 30
 CELL_HEIGHT = 30
 CELL_MARGIN = 3
