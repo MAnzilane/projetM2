@@ -1,0 +1,8 @@
+{"motor_left_0": "11", 
+"start_speed": "60", 
+"start_frequency": "60", 
+"motor_right_0": "13", 
+"motor_right_1": "15", 
+"speed_channel_left": "4", 
+"speed_channel_right": "5", 
+"motor_left_1": "12"}
