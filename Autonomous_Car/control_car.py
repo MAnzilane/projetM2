@@ -49,7 +49,7 @@ map_action_direction = {
 
 actions = [UP, DOWN, LEFT, RIGHT]
 directions = [NORTH, SOUTH, WEST, EAST]
-current_direction = NORTH
+current_direction = SOUTH
 
 
 def update_position(action):

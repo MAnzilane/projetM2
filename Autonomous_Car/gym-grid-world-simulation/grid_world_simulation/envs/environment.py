@@ -19,9 +19,9 @@ class GridWorld(Env):
         self.state_space_plus = [i for i in range(self.grid_width * self.grid_height)]
         self.possible_actions = [UP, DOWN, LEFT, RIGHT]
         self.action_result = {
-                                UP: -self.grid_width,
+                                UP: - self.grid_width,
                                 DOWN: self.grid_width,
-                                LEFT: -1,
+                                LEFT: - 1,
                                 RIGHT: 1
                               }
         self.action_space = spaces.Discrete(ACTIONS_NUMBER)
@@ -30,9 +30,11 @@ class GridWorld(Env):
                                                spaces.Box(0, DISTANCE_MAX, shape=(1,))))
         self.obstacles = obstacles
         self.agent_position = 0
-        self.current_distance = 0
+        self.current_distance = 0.0
         self.screen = None
 
+    # X : Row
+    # Y : Column
     def get_x_y_from_position(self, position):
         x = position // self.grid_width
         y = position % self.grid_height
@@ -72,12 +74,12 @@ class GridWorld(Env):
         if self.is_terminal_state(updated_agent_position):
             self.update_agent_position(updated_agent_position)
             reward = 0
-            self.current_distance = 0
+            self.current_distance = 0.0
             return np.array((updated_agent_position_x, updated_agent_position_y, self.current_distance)), reward, True, None
         else:
             if not self.is_forbidden_move(updated_agent_position, self.agent_position):
                 self.update_agent_position(updated_agent_position)
-                self.current_distance = self.euclidean_distance(updated_agent_position_x, updated_agent_position_x, TARGET_X - 1, TARGET_Y - 1)
+                self.current_distance = self.euclidean_distance(updated_agent_position_x, updated_agent_position_y, TARGET_X - 1, TARGET_Y - 1)
                 reward = - self.current_distance
                 return np.array((updated_agent_position_x, updated_agent_position_y, self.current_distance)), reward, False, None
             else:
@@ -88,10 +90,10 @@ class GridWorld(Env):
 
     def reset(self):
         self.grid = np.zeros((self.grid_height, self.grid_height))
-        self.grid[TARGET_X - 1][TARGET_Y - 1] = 3
-        self.add_obstacles()
         self.update_agent_position(0)
-        self.current_distance = 0
+        self.add_obstacles()
+        self.grid[TARGET_X - 1][TARGET_Y - 1] = 3
+        self.current_distance = 0.0
         x, y = self.get_x_y_from_position(self.agent_position)
         return np.array((x, y, self.current_distance))
 
@@ -124,15 +126,12 @@ class GridWorld(Env):
 
             # Set the screen background
             self.screen.fill(WHITE)
-
             # Draw the grid
             for row in range(GRID_ROWS):
                 for column in range(GRID_COLUMNS):
-                    color = BLACK
                     # Car
                     if self.grid[row][column] == 1:
-                        print("ICIII", row, column)
-                        if row == (TARGET_Y - 1) and column == (TARGET_X - 1):
+                        if (row == (TARGET_X - 1)) and (column == (TARGET_Y - 1)):
                             color = YELLOW
                         else:
                             color = BLUE
@@ -142,6 +141,8 @@ class GridWorld(Env):
                     # Target
                     elif self.grid[row][column] == 3:
                         color = GREEN
+                    else:
+                        color = BLACK
                     pygame.draw.rect(self.screen,
                                      color,
                                      [(CELL_MARGIN + CELL_WIDTH) * column + CELL_MARGIN,
