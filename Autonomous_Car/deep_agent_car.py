@@ -96,22 +96,29 @@ def main():
             environment.add_obstacle(action, distance)
             new_state, reward, done, info = environment.step(action)
             print("Current", current_state, "New", new_state)
-            if current_state != new_state:
+            # if (int(current_state[0]) != int(new_state[0])) or (int(current_state[1]) != int(new_state[1]))
+            # if not np.array_equal(current_state[:2], new_state[:2]):
+            x_1 = current_state[0]
+            x_2 = new_state[0]
+            y_1 = current_state[1]
+            y_2 = new_state[1]
+            if (int(x_1) != int(x_2)) or (int(y_1) != int(y_2)):
                 forward()
             new_state = new_state.reshape(1, STATE_SHAPE)
             agent.add_to_memory(current_state, action, reward, new_state, done)
-
             agent.model_train()  # Internally iterates default (prediction) model
             agent.target_train()  # Iterates target model
 
             current_state = new_state
             if done:
                 break
+        stop()
         enter = input("Press \'Enter\' to continue")
         if enter == "":
             continue
 
     environment.close()
+    stop()
 
 
 if __name__ == "__main__":

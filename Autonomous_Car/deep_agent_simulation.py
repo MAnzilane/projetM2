@@ -1,4 +1,5 @@
 import gym
+import time
 import grid_world_simulation
 import numpy as np
 import random
@@ -38,8 +39,7 @@ class Agent:
 
     def create_model(self):
         model = Sequential()
-        state_shape = (3, 0)
-        model.add(Dense(24, input_dim=state_shape[0], activation="relu"))
+        model.add(Dense(24, input_dim=STATE_SHAPE, activation="relu"))
         model.add(Dense(48, activation="relu"))
         model.add(Dense(24, activation="relu"))
         model.add(Dense(self.environment.action_space.n))
@@ -74,7 +74,7 @@ class Agent:
 
 
 def main():
-    environment = gym.make('Grid-World-Simulation-v0', grid_width=GRID_COLUMNS, grid_height=GRID_ROWS, obstacles=[5, 10, 18])
+    environment = gym.make('Grid-World-Simulation-v0', grid_width=GRID_COLUMNS, grid_height=GRID_ROWS, obstacles=[])
 
     episodes = 10
     episode_length = 100
@@ -83,22 +83,27 @@ def main():
     for trial in range(episodes):
         # Initial state of the trial
         print("Episode {}".format(trial))
-        current_state = environment.reset().reshape(1, 3)
+        current_state = environment.reset()
+        reshaped_current_state = current_state.reshape(1, STATE_SHAPE)
         for step in range(episode_length):
             print("Step {}".format(step))
             environment.render()
-            action = agent.choose_action(current_state)
+            action = agent.choose_action(reshaped_current_state)
+            print("Action", action)
             new_state, reward, done, info = environment.step(action)
+            print("Current", reshaped_current_state, "New", new_state)
 
-            new_state = new_state.reshape(1, 3)
-            agent.add_to_memory(current_state, action, reward, new_state, done)
+            new_state = new_state.reshape(1, STATE_SHAPE)
+            agent.add_to_memory(reshaped_current_state, action, reward, new_state, done)
 
             agent.model_train()  # Internally iterates default (prediction) model
             agent.target_train()  # Iterates target model
 
-            current_state = new_state
-            if done:
+            reshaped_current_state = new_state
+            if done or step == episode_length - 1:
                 environment.render()
+            if done:
+                time.sleep(1)
                 break
     environment.close()
 
