@@ -34,8 +34,8 @@ class Ultrasound(object):
 	# ==================================================================
 	def __init__(self):
 		config = Config(self.CONFIG_FILE())
-		self.trigger_pin = int(config.get("trigger_pin"))
-		self.echo_pin = int(config.get("echo_pin"))
+		self.trigger_pin = 16
+		self.echo_pin = 18
 
 		GPIO.setmode(GPIO.BOARD)
 		GPIO.setup(self.trigger_pin, GPIO.OUT)

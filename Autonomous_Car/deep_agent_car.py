@@ -2,7 +2,7 @@ import gym
 import grid_world_car
 import numpy as np
 import random
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout
 from keras.optimizers import Adam
 from collections import deque
@@ -73,45 +73,48 @@ class Agent:
     def save_model(self, filename):
         self.model.save(filename)
 
+    def load_model(self, filename):
+        self.model = load_model(filename)
+
 
 def main():
     environment = gym.make('Grid-World-Car-v0', grid_width=GRID_COLUMNS, grid_height=GRID_ROWS, obstacles=[5, 10, 18])
     environment = environment.unwrapped
 
     episodes = 10
-    episode_length = 100
+    episode_length = 10
     agent = Agent(environment=environment)
     
     for trial in range(episodes):
-        # Initial state of the trial
         print("Episode {}".format(trial))
-        #
         current_state = environment.reset().reshape(1, STATE_SHAPE)
         environment.render()
         for step in range(episode_length):
             print("Step {}".format(step))
             # environment.render()
             action = agent.choose_action(current_state)
+            print("Action", action)
             distance = update_position(action)
+            print("Distance", distance)
             environment.add_obstacle(action, distance)
             new_state, reward, done, info = environment.step(action)
             print("Current", current_state, "New", new_state)
-            # if (int(current_state[0]) != int(new_state[0])) or (int(current_state[1]) != int(new_state[1]))
-            # if not np.array_equal(current_state[:2], new_state[:2]):
-            x_1 = current_state[0]
-            x_2 = new_state[0]
-            y_1 = current_state[1]
-            y_2 = new_state[1]
-            if (int(x_1) != int(x_2)) or (int(y_1) != int(y_2)):
+            temporary = current_state.reshape(STATE_SHAPE, )
+            if (int(temporary[0]) != int(new_state[0])) or (int(temporary[1]) != int(new_state[1])):
                 forward()
             new_state = new_state.reshape(1, STATE_SHAPE)
             agent.add_to_memory(current_state, action, reward, new_state, done)
-            agent.model_train()  # Internally iterates default (prediction) model
-            agent.target_train()  # Iterates target model
-
+            # Internally iterates default (prediction) model
+            agent.model_train()
+            # Iterates target model
+            agent.target_train()
             current_state = new_state
             if done:
                 break
+            stop()
+            enter = input("Press \'Enter\' to continue")
+            if enter == "":
+                continue
         stop()
         enter = input("Press \'Enter\' to continue")
         if enter == "":

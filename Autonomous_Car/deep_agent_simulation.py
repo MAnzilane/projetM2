@@ -3,7 +3,8 @@ import time
 import grid_world_simulation
 import numpy as np
 import random
-from keras.models import Sequential
+import matplotlib.pyplot as plt
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout
 from keras.optimizers import Adam
 from collections import deque
@@ -72,40 +73,53 @@ class Agent:
     def save_model(self, filename):
         self.model.save(filename)
 
+    def load_model(self, filename):
+        self.model = load_model(filename)
+
 
 def main():
-    environment = gym.make('Grid-World-Simulation-v0', grid_width=GRID_COLUMNS, grid_height=GRID_ROWS, obstacles=[])
+    environment = gym.make('Grid-World-Simulation-v0', grid_width=GRID_COLUMNS, grid_height=GRID_ROWS, obstacles=[3, 21, 33, 45, 50, 64, 77, 88])
 
-    episodes = 10
-    episode_length = 100
+    episodes = 100
+    episode_length = 30
+    total_rewards = np.zeros(episodes)
     agent = Agent(environment=environment)
     
     for trial in range(episodes):
-        # Initial state of the trial
         print("Episode {}".format(trial))
+        episode_reward = 0
         current_state = environment.reset()
         reshaped_current_state = current_state.reshape(1, STATE_SHAPE)
         for step in range(episode_length):
             print("Step {}".format(step))
             environment.render()
             action = agent.choose_action(reshaped_current_state)
-            print("Action", action)
+            # print("Action", action)
             new_state, reward, done, info = environment.step(action)
-            print("Current", reshaped_current_state, "New", new_state)
+            episode_reward += reward
+            # print("Current", reshaped_current_state, "New", new_state)
 
             new_state = new_state.reshape(1, STATE_SHAPE)
             agent.add_to_memory(reshaped_current_state, action, reward, new_state, done)
 
-            agent.model_train()  # Internally iterates default (prediction) model
-            agent.target_train()  # Iterates target model
+            # Internally iterates default (prediction) model
+            agent.model_train()
+            # Iterates target model
+            agent.target_train()
 
             reshaped_current_state = new_state
             if done or step == episode_length - 1:
                 environment.render()
+                total_rewards[trial] = episode_reward
+            if trial % 1000 == 999:
+                agent.save_model("model_{}_episodes".format(trial))
             if done:
                 time.sleep(1)
                 break
     environment.close()
+    print(total_rewards)
+    plt.plot(total_rewards)
+    plt.show()
 
 
 if __name__ == "__main__":

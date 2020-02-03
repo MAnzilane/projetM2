@@ -35,7 +35,7 @@ class Direction(object):
 	# Constants
 	#===================================================================
 	def CONFIG_FILE(self):
-		return "/home/pi/projet/lib/hardware/direction.conf"
+		return "/home/pi/projetM2/Autonomous_Car/lib/hardware/direction.conf"
 
 	def LEFT_PWM(self):
 		return int(self._config.get("left_pwm", 320))
