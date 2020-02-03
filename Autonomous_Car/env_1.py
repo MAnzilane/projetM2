@@ -9,7 +9,7 @@ class GridWorld(object):
 		self.m = m
 		self.n = n
 		self.stateSpace = [i for i in range(self.m*self.n)]
-		self.stateSpace.remove()[self.m*self.n-1]
+		self.stateSpace.remove([self.m*self.n-1])
 		self.stateSpacePlus = [i for i in range(self.m*self.n)]
 		self.actionSpace = { 'U' : -self.m , 'D' : self.m,
 							 'L' : -1 , 'R' : 1}
@@ -19,7 +19,7 @@ class GridWorld(object):
 
 
 	def isTerminalState(self, state):
-		return state in self.stateSpacePlus and not in self.stateSpace
+		return state in self.stateSpacePlus and state not in self.stateSpace
 
 
 	def getAgentRowAndColumn(self):
@@ -34,13 +34,13 @@ class GridWorld(object):
 		x , y = self.getAgentRowAndColumn()
 		self.grid[x][y] = 1
 
-    def addObstacles(self, obstacles):
-        self.obstacles = obstacles
-        i = 2
-        for square in self.obstacles:
-            x = square // self.m
-            y = square % self.n
-            self.grid[x][y] = i
+	def addObstacles(self, obstacles):
+		self.obstacles = obstacles
+		i = 2
+		for square in self.obstacles:
+			x = square // self.m
+			y = square % self.n
+			self.grid[x][y] = i
 
 	def offGridObstacleMove(self, newState, oldState):
 		if newState not in self.stateSpacePlus:
@@ -85,54 +85,54 @@ class GridWorld(object):
 			print('\n')
 		print('----------------------------------------')
 
-    def actionSpaceSample(self):
-        return np.random.choice(self.possibleActions)
+	def actionSpaceSample(self):
+		return np.random.choice(self.possibleActions)
 
 
 def maxAction(Q, state, actions):
-    values = np.array([Q[state,a] for a in actions])
-    action = np.argmax(values)
-    return actions[action]
+	values = np.array([Q[state,a] for a in actions])
+	action = np.argmax(values)
+	return actions[action]
 
 
 if __name__ == '__main__':
-    # map magic squares to their connecting square
-    obstacles = [18 ,54, 63, 14]
-    env = GridWorld(9, 9, obstacles)
-    # model hyperparameters
-    ALPHA = 0.1
-    GAMMA = 1.0
-    EPS = 1.0
+	# map magic squares to their connecting square
+	obstacles = [18 ,54, 63, 14]
+	env = GridWorld(9, 9, obstacles)
+	# model hyperparameters
+	ALPHA = 0.1
+	GAMMA = 1.0
+	EPS = 1.0
 
-    Q = {}
-    for state in env.stateSpacePlus:
-        for action in env.possibleActions:
-            Q[state, action] = 0
+	Q = {}
+	for state in env.stateSpacePlus:
+		for action in env.possibleActions:
+			Q[state, action] = 0
 
-    numGames = 50000
-    totalRewards = np.zeros(numGames)
-    for i in range(numGames):
-        if i % 5000 == 0:
-            print('starting game ', i)
-        done = False
-        epRewards = 0
-        observation = env.reset()
-        while not done:
-            rand = np.random.random()
-            action = maxAction(Q,observation, env.possibleActions) if rand < (1-EPS) \
-                                                    else env.actionSpaceSample()
-            observation_, reward, done, info = env.step(action)
-            epRewards += reward
+	numGames = 50000
+	totalRewards = np.zeros(numGames)
+	for i in range(numGames):
+		if i % 5000 == 0:
+			print('starting game ', i)
+		done = False
+		epRewards = 0
+		observation = env.reset()
+		while not done:
+			rand = np.random.random()
+			action = maxAction(Q,observation, env.possibleActions) if rand < (1-EPS) \
+													else env.actionSpaceSample()
+			observation_, reward, done, info = env.step(action)
+			epRewards += reward
 
-            action_ = maxAction(Q, observation_, env.possibleActions)
-            Q[observation,action] = Q[observation,action] + ALPHA*(reward + \
-                        GAMMA*Q[observation_,action_] - Q[observation,action])
-            observation = observation_
-        if EPS - 2 / numGames > 0:
-            EPS -= 2 / numGames
-        else:
-            EPS = 0
-        totalRewards[i] = epRewards
+			action_ = maxAction(Q, observation_, env.possibleActions)
+			Q[observation,action] = Q[observation,action] + ALPHA*(reward + \
+						GAMMA*Q[observation_,action_] - Q[observation,action])
+			observation = observation_
+		if EPS - 2 / numGames > 0:
+			EPS -= 2 / numGames
+		else:
+			EPS = 0
+		totalRewards[i] = epRewards
 
-    plt.plot(totalRewards)
-    plt.show()
+	plt.plot(totalRewards)
+	plt.show()
